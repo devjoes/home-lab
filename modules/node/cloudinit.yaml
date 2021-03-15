@@ -1,0 +1,18 @@
+#cloud-config
+manage_etc_hosts: true
+chpasswd:
+  expire: False
+hostname: ${hostname}
+fqdn: ${fqdn}
+users:
+  - default
+  - name: joe
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${pubkey}
+packages: qemu-guest-agent
+
+package_upgrade: true
+bootcmd:
+  - sysctl -w net.ipv4.ip_forward=1

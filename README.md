@@ -1,7 +1,7 @@
 # home-lab
 K8S cluster and supporting infrastructure
 
-This is just for me to use at home. If you put this anywhere near a production system then your going to have a really bad day. Parts are held together with gaffa tape and it's about as HA as jelly. 
+**This is just for me to use at home. If you put this anywhere near a production system then your going to have a really bad day. Parts are held together with gaffa tape and it's about as HA as jelly.**
 
 It requires a Proxmox environment with networking set up like this:
 
@@ -35,4 +35,10 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -A FORWARD -i vmbr0.99 -o vmbr0 -j ACCEPT
 iptables -A FORWARD -i vmbr0 -o vmbr0.99 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -t nat -A POSTROUTING -o vmbr0 -j MASQUERADE
+```
+
+After deploying then this command will set up your kubeconfig
+```
+cp "$HOME/.kube/config" "$HOME/.kube/config.$(date +%s)"
+KUBECONFIG="$HOME/.kube/config:./.terraform/tmp/config" kubectl config view --flatten > $HOME/.kube/config"
 ```
