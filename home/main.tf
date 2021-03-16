@@ -1,7 +1,7 @@
 module "masters" {
   source       = "../modules/node"
   node_type    = "master"
-  node_count   = 1
+  node_count   = var.master_count
   ip_offset    = 10
   cores        = 1
   memory       = 2560
@@ -15,7 +15,7 @@ module "masters" {
 module "workers" {
   source       = "../modules/node"
   node_type    = "worker"
-  node_count   = 2
+  node_count   = var.worker_count
   ip_offset    = 20
   cores        = 2
   memory       = 4096
@@ -34,10 +34,14 @@ module "kubespray" {
   source       = "../modules/kubespray"
   masters      = module.masters.nodes
   workers      = module.workers.nodes
+  node_count   = var.master_count + var.worker_count
   cluster_fqdn = var.cluster_fqdn
 }
 
 module "resources" {
-  source = "../modules/resources"
-  auth   = module.kubespray.auth
+  source           = "../modules/resources"
+  auth             = module.kubespray.auth
+  powerdns_server  = var.powerdns_server
+  powerdns_api_key = var.powerdns_api_key
+  cluster_fqdn     = var.cluster_fqdn
 }

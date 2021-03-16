@@ -2,15 +2,37 @@ resource "local_file" "inventory" {
   filename = "${path.root}/.terraform/tmp/inventory.json"
   content  = jsonencode(local.inventory)
 }
+locals {
+  node_ips = [for n in concat(var.masters, var.workers) : n.ip]
+}
+resource "null_resource" "wait" {
+  count = var.node_count
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = local.node_ips[count.index]
+      user        = "joe" //TODO: change all "joe"s to "setup"
+      private_key = file("~/.ssh/id_rsa")
+    }
+    inline = [
+      "while [ ! -f /run/cloud-init/result.json ]; do",
+      "echo 'Waiting for cloud init to complete...'",
+      "sleep 1s",
+      "done"
+    ]
+  }
+}
 resource "null_resource" "kubespray" {
   triggers = {
     inventory = local_file.inventory.content
   }
+  depends_on = [
+    null_resource.wait
+  ]
   provisioner "local-exec" {
     #TODO: There is probably a much better way of gaffa taping ansible to terraform
     on_failure = fail
     command    = <<-EOT
-              sleep 1m
               set -e
               inventory_path="$(realpath ${path.root}/.terraform/tmp/inventory.json)"
               cd ${path.module}/kubespray

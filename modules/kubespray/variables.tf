@@ -10,6 +10,10 @@ variable "workers" {
 
 }
 
+variable "node_count" {
+
+}
+
 locals {
   master_names     = [for n in var.masters : n.name]
   worker_names     = [for n in var.workers : n.name]

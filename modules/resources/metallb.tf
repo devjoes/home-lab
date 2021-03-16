@@ -1,12 +1,7 @@
-resource "kubernetes_namespace" "metallb" {
-  metadata {
-    name = "metallb"
-  }
-}
 resource "kubernetes_config_map" "metallb" {
   metadata {
     name      = "config"
-    namespace = kubernetes_namespace.metallb.metadata[0].name
+    namespace = "kube-system"
   }
   data = {
     config = <<-EOT
@@ -20,8 +15,12 @@ resource "kubernetes_config_map" "metallb" {
 }
 
 resource "helm_release" "metallb" {
-  name       = "metallb"
+  name       = "metal-lb"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "metallb"
-  namespace  = kubernetes_namespace.metallb.metadata[0].name
+  namespace  = "kube-system"
+  set {
+    name  = "existingConfigMap"
+    value = kubernetes_config_map.metallb.metadata[0].name
+  }
 }
