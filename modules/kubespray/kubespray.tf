@@ -55,8 +55,8 @@ resource "null_resource" "get_config" {
     command    = <<-EOT
           rm ${path.root}/.terraform/tmp/config
           set -e
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${var.masters[0].ip} "sudo cp /root/.kube ~/ -av; sudo chown "\$USER:\$USER" ~/.kube -R"
-          scp -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${var.masters[0].ip}:.kube/config ${path.root}/.terraform/tmp/config
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null setup@${var.masters[0].ip} "sudo cp /root/.kube ~/ -av; sudo chown "\$USER:\$USER" ~/.kube -R"
+          scp -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null setup@${var.masters[0].ip}:.kube/config ${path.root}/.terraform/tmp/config
           test -f ${path.root}/.terraform/tmp/config
           EOT
   }
