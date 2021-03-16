@@ -11,7 +11,7 @@ resource "null_resource" "wait" {
     connection {
       type        = "ssh"
       host        = local.node_ips[count.index]
-      user        = "joe" //TODO: change all "joe"s to "setup"
+      user        = "setup"
       private_key = file("~/.ssh/id_rsa")
     }
     inline = [
@@ -37,7 +37,7 @@ resource "null_resource" "kubespray" {
               inventory_path="$(realpath ${path.root}/.terraform/tmp/inventory.json)"
               cd ${path.module}/kubespray
               ansible-playbook -i "$inventory_path" cluster.yml -b -v \
-               --private-key=$HOME/.ssh/id_rsa \
+               --user setup --private-key=$HOME/.ssh/id_rsa \
                --extra-vars "{helm_enabled: True, metrics_server_enabled: True}"
               EOT
   }

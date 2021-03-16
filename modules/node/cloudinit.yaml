@@ -6,7 +6,7 @@ hostname: ${hostname}
 fqdn: ${fqdn}
 users:
   - default
-  - name: joe
+  - name: setup
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:

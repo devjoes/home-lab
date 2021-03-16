@@ -21,6 +21,7 @@ locals {
   worker_names_map = { for n in var.workers : n.name => null }
   inventory = {
     all = {
+      ansible_user = "setup"
       hosts = zipmap(
         concat(local.master_names, local.worker_names),
         [for n in concat(var.masters, var.workers) : { ansible_host = n.ip }]

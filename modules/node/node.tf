@@ -38,9 +38,6 @@ resource "proxmox_vm_qemu" "node" {
     type = "socket"
   }
 
-  #TODO: Remove
-  ciuser          = "root"
-  cipassword      = "AjRWWjcedXrSMmRMwSF6WcbzW1ZDOp2KN3Tt6O4ndKVp7ovVbMGY3uNpkO7KrgO"
   ssh_user        = "root"
   ssh_private_key = <<EOF
 -----BEGIN RSA PRIVATE KEY-----
