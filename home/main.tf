@@ -19,6 +19,15 @@ module "workers" {
   ip_offset    = 20
   cores        = 2
   memory       = 4096
+  disk_size    = "50G"
+  pve_user     = var.pve_user
+  pve_password = var.pve_password
+  pve_host     = var.pve_host
+  cluster_fqdn = var.cluster_fqdn
+}
+
+module "nfs_server" {
+  source       = "../modules/nfs_server"
   disk_size    = "100G"
   pve_user     = var.pve_user
   pve_password = var.pve_password

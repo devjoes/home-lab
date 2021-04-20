@@ -16,3 +16,4 @@ packages: qemu-guest-agent
 package_upgrade: true
 bootcmd:
   - sysctl -w net.ipv4.ip_forward=1
+  - apt update; apt-get install qemu-guest-agent nfs-common -y | tee /tmp/log

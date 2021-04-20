@@ -1,4 +1,5 @@
 # home-lab
+
 ### K8S cluster and supporting infrastructure.
 
 This will create some 3 VMs on a Proxmox server and deploy a 1 master and 2 worker nodes cluster using kubespray.
@@ -43,8 +44,13 @@ iptables -t nat -A POSTROUTING -o vmbr0 -j MASQUERADE
 ```
 
 After deploying then this command will set up your kubeconfig
+
 ```
 cp "$HOME/.kube/config" "$HOME/.kube/config.$(date +%s)"
+kubectl config delete-cluster cluster.local || true
+kubectl config delete-context kubernetes-admin@cluster.local || true
+kubectl config unset users.kubernetes-admin || true
 sed -i 's/127\.0\.0\.1/10.99.0.10/' ./.terraform/tmp/config
-KUBECONFIG="$HOME/.kube/config:./.terraform/tmp/config" kubectl config view --flatten > $HOME/.kube/config
+KUBECONFIG="$HOME/.kube/config:./.terraform/tmp/config" kubectl config view --flatten > /tmp/config
+mv /tmp/config $HOME/.kube/
 ```

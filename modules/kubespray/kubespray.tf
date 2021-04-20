@@ -38,7 +38,7 @@ resource "null_resource" "kubespray" {
               cd ${path.module}/kubespray
               ansible-playbook -i "$inventory_path" cluster.yml -b -v \
                --user setup --private-key=$HOME/.ssh/id_rsa \
-               --extra-vars "{helm_enabled: True, metrics_server_enabled: True}"
+               --extra-vars "{local_volume_provisioner_enabled: True, helm_enabled: True, metrics_server_enabled: True}"
               EOT
   }
 }

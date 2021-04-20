@@ -1,22 +1,20 @@
-/* Configure cloud-init User-Data with custom config file */
-resource "proxmox_vm_qemu" "node" {
+resource "proxmox_vm_qemu" "nfs_server" {
   depends_on = [
     null_resource.cloud_init_config_files,
   ]
-  count = var.node_count
 
-  name        = "${var.node_type}-${count.index}"
-  desc        = "node"
+  name        = "nfs-server"
+  desc        = "nfs-server"
   target_node = "pve"
   clone       = "ubuntu-10.04-server"
   agent       = 1
   hastate     = ""
 
-  cores    = var.cores
+  cores    = 1
   sockets  = 1
   cpu      = "host"
   numa     = false
-  memory   = var.memory
+  memory   = "515"
   scsihw   = "lsi"
   bootdisk = "virtio0"
 
@@ -46,6 +44,6 @@ private ssh key root
 EOF
 
   os_type   = "cloud-init"
-  ipconfig0 = "ip=10.99.0.${var.ip_offset + count.index}/16,gw=10.99.0.1"
-  cicustom  = "user=local:snippets/node_user_data_vm-${var.node_type}-${count.index}.yaml"
+  ipconfig0 = "ip=10.99.0.2/16,gw=10.99.0.1"
+  cicustom  = "user=local:snippets/nfs_server_user_data_vm.yaml"
 }

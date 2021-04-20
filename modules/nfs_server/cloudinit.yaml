@@ -1,0 +1,26 @@
+#cloud-config
+manage_etc_hosts: true
+chpasswd:
+  expire: False
+hostname: ${hostname}
+fqdn: ${fqdn}
+users:
+  - default
+  - name: setup
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${pubkey}
+packages: qemu-guest-agent
+
+package_upgrade: true
+bootcmd:
+  - apt update; apt-get install qemu-guest-agent nfs-kernel-server nfs-common portmap -y
+  - service nfs-kernel-server enable
+  - service nfs-kernel-server start
+  - mkdir -p /srv/nfs/k8s
+  - chmod -R 777 /srv/nfs/k8s
+  - echo '/srv/nfs/k8s  *(rw,sync,no_subtree_check,no_root_squash,insecure)' >> /etc/exports
+  - exportfs -rv
+power_state:
+  mode: reboot
